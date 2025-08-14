@@ -124,7 +124,7 @@ gdjs.StartSceneCode.eventsList0 = function(runtimeScene) {
 }
 
 
-};gdjs.StartSceneCode.userFunc0xcd2c10 = function GDJSInlineCode(runtimeScene) {
+};gdjs.StartSceneCode.userFunc0x8bf3f8 = function GDJSInlineCode(runtimeScene) {
 "use strict";
 runtimeScene.setBackgroundColor(100,100,240);
 
@@ -183,7 +183,7 @@ gdjs.StartSceneCode.eventsList2 = function(runtimeScene) {
 {
 
 
-gdjs.StartSceneCode.userFunc0xcd2c10(runtimeScene);
+gdjs.StartSceneCode.userFunc0x8bf3f8(runtimeScene);
 
 }
 
@@ -204,8 +204,7 @@ let isConditionTrue_0 = false;
 isConditionTrue_0 = false;
 isConditionTrue_0 = gdjs.evtTools.runtimeScene.sceneJustBegins(runtimeScene);
 if (isConditionTrue_0) {
-{gdjs.evtTools.window.setFullScreen(runtimeScene, true, true);
-}{gdjs.evtTools.camera.showLayer(runtimeScene, "UI");
+{gdjs.evtTools.camera.showLayer(runtimeScene, "UI");
 }{gdjs.evtTools.camera.hideLayer(runtimeScene, "Fade");
 }{gdjs.evtTools.camera.hideLayer(runtimeScene, "");
 }{gdjs.evtTools.camera.hideLayer(runtimeScene, "Language");
@@ -229,7 +228,7 @@ gdjs.StartSceneCode.eventsList1(runtimeScene);} //End of subevents
 
 let isConditionTrue_0 = false;
 isConditionTrue_0 = false;
-{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(14058708);
+{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(14240964);
 }
 if (isConditionTrue_0) {
 
