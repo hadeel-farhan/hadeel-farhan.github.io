@@ -1,47 +1,46 @@
-# Picto - Personal Portfolio Free Template
-
+# Resume - Free Next.js Resume Website Template
 #### Preview
 
-- [Demo](https://themewagon.github.io/picto/)
+ - [Demo](https://themewagon.github.io/Resume-Nextjs/)
 
 #### Download
+ - [Download from ThemeWagon](https://themewagon.com/themes/resume-nextjs/)
 
-- [Download from ThemeWagon](https://themewagon.com/themes/picto)
 
 ## Getting Started
 
-1. Clone Repository
-
-```
-git clone https://github.com/themewagon/picto.git
-```
-
-2. Install Dependencies
-
-```
-npm i
+Clone from GitHub 
+```bash
+git clone https://github.com/themewagon/Resume-Nextjs.git
 ```
 
-3. Run the development server:
+Install dependencies:
+```bash
+npm install
+```
 
+Run development server:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+
+Build for production:
+```bash
+npm run build
 ```
 
 ## Author
 
-```
-Developed by ThemeWagon and development team.
-```
+Design and code are written by the getnextjstemplates design & development team.  
+
 
 ## License
 
-- Design and Code is Copyright &copy; <a href="http://themewagon.com/" target="_blank">ThemeWagon</a>
-- Licensed cover under [MIT]
-- Developed by <a href="http://themewagon.com/" target="_blank">ThemeWagon</a>
+ - Design and Code is Copyright &copy; [getnextjstemplates](https://getnextjstemplates.com/)
+ - Licensed under [MIT]
+ - Distributed by [ThemeWagon](https://themewagon.com)
+
+
+
+
+
