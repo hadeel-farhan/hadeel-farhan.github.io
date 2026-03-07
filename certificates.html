@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certificates & Achievements — Hadeel Farhan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0EB;
+    --dark: #1A1A18;
+    --terracotta: #C4633A;
+    --terracotta-light: #D4774E;
+    --muted: #8A8580;
+    --border: #E0D8D0;
+    --white: #FEFCFA;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 60px;
+    background: rgba(245, 240, 235, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--dark);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--dark);
+    font-size: 14px;
+    font-weight: 400;
+    opacity: 0.65;
+    transition: opacity 0.2s;
+  }
+
+  .nav-links a:hover { opacity: 1; }
+  .nav-links a.active { opacity: 1; color: var(--terracotta); font-weight: 500; }
+
+  /* PAGE HEADER */
+  .page-header {
+    padding: 140px 60px 64px;
+    max-width: 720px;
+  }
+
+  .page-tag {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.2s;
+  }
+
+  .page-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    line-height: 1.08;
+    color: var(--dark);
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.35s;
+  }
+
+  .page-header p {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 440px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.5s;
+  }
+
+  /* GRID */
+  .certs-section {
+    padding: 0 60px 120px;
+  }
+
+  .certs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 860px;
+  }
+
+  /* CARD */
+  .cert-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 28px 28px 24px;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.25s, border-color 0.25s;
+    cursor: default;
+  }
+
+  .cert-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .cert-card:hover {
+    box-shadow: 0 6px 28px rgba(0,0,0,0.07);
+    border-color: rgba(196,99,58,0.25);
+  }
+
+  /* ICON */
+  .cert-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    margin-top: 2px;
+  }
+
+  .cert-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* BODY */
+  .cert-body {
+    flex: 1;
+  }
+
+  .cert-type {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--terracotta);
+    background: rgba(196,99,58,0.1);
+    padding: 3px 9px;
+    border-radius: 2px;
+    margin-bottom: 10px;
+  }
+
+  .cert-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--dark);
+    line-height: 1.45;
+    margin-bottom: 5px;
+    letter-spacing: -0.01em;
+  }
+
+  .cert-org {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+
+  .cert-year {
+    font-size: 12.5px;
+    color: var(--muted);
+    opacity: 0.7;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 28px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    background: var(--cream);
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--dark);
+    text-decoration: none;
+  }
+
+  .footer-copy { font-size: 12.5px; color: var(--muted); }
+
+  .footer-icons { display: flex; gap: 20px; }
+  .footer-icons a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 17px;
+    transition: color 0.2s;
+  }
+  .footer-icons a:hover { color: var(--terracotta); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="hadeel-farhan-portfolio.html" class="nav-logo">Hadeel Farhan</a>
+  <ul class="nav-links">
+    <li><a href="hadeel-farhan-portfolio.html">Home</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="hadeel-farhan-projects.html">Projects</a></li>
+    <li><a href="#" class="active">Certificates</a></li>
+    <li><a href="#">Artwork</a></li>
+  </ul>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <p class="page-tag">Professional Development</p>
+  <h1>Certificates & Achievements</h1>
+  <p>A collection of academic achievements, certifications, and professional milestones.</p>
+</div>
+
+<!-- CERTS GRID -->
+<div class="certs-section">
+  <div class="certs-grid">
+
+    <!-- 1 -->
+    <div class="cert-card">
+      <div class="cert-icon">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="14" r="9" stroke="#C4633A" stroke-width="1.8" fill="rgba(196,99,58,0.08)"/>
+          <path d="M11 22 L8 32 L18 28 L28 32 L25 22" stroke="#C4633A" stroke-width="1.8" stroke-linejoin="round" fill="rgba(196,99,58,0.06)"/>
+          <circle cx="18" cy="14" r="4" fill="rgba(196,99,58,0.2)" stroke="#C4633A" stroke-width="1.2"/>
+        </svg>
+      </div>
+      <div class="cert-body">
+        <span class="cert-type">Award</span>
+        <p class="cert-title">Best Educational Accessibility Hack</p>
+        <p class="cert-org">HackHarvard</p>
+        <p class="cert-year">2022</p>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="cert-card">
+      <div class="cert-icon">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="14" r="9" stroke="#C4633A" stroke-width="1.8" fill="rgba(196,99,58,0.08)"/>
+          <path d="M11 22 L8 32 L18 28 L28 32 L25 22" stroke="#C4633A" stroke-width="1.8" stroke-linejoin="round" fill="rgba(196,99,58,0.06)"/>
+          <circle cx="18" cy="14" r="4" fill="rgba(196,99,58,0.2)" stroke="#C4633A" stroke-width="1.2"/>
+        </svg>
+      </div>
+      <div class="cert-body">
+        <span class="cert-type">Degree</span>
+        <p class="cert-title">B.S. Computer Science — Human-Centered Computing</p>
+        <p class="cert-org">Northeastern University</p>
+        <p class="cert-year">2023</p>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="cert-card">
+      <div class="cert-icon">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="14" r="9" stroke="#C4633A" stroke-width="1.8" fill="rgba(196,99,58,0.08)"/>
+          <path d="M11 22 L8 32 L18 28 L28 32 L25 22" stroke="#C4633A" stroke-width="1.8" stroke-linejoin="round" fill="rgba(196,99,58,0.06)"/>
+          <circle cx="18" cy="14" r="4" fill="rgba(196,99,58,0.2)" stroke="#C4633A" stroke-width="1.2"/>
+        </svg>
+      </div>
+      <div class="cert-body">
+        <span class="cert-type">Degree</span>
+        <p class="cert-title">Minor in Interaction Design</p>
+        <p class="cert-org">Northeastern University</p>
+        <p class="cert-year">2023</p>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="cert-card">
+      <div class="cert-icon">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="14" r="9" stroke="#C4633A" stroke-width="1.8" fill="rgba(196,99,58,0.08)"/>
+          <path d="M11 22 L8 32 L18 28 L28 32 L25 22" stroke="#C4633A" stroke-width="1.8" stroke-linejoin="round" fill="rgba(196,99,58,0.06)"/>
+          <circle cx="18" cy="14" r="4" fill="rgba(196,99,58,0.2)" stroke="#C4633A" stroke-width="1.2"/>
+        </svg>
+      </div>
+      <div class="cert-body">
+        <span class="cert-type">Framework</span>
+        <p class="cert-title">AI Literacy Framework (ALiF) — Co-developer</p>
+        <p class="cert-org">Dubai Health MBRU</p>
+        <p class="cert-year">2024</p>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="cert-card">
+      <div class="cert-icon">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="14" r="9" stroke="#C4633A" stroke-width="1.8" fill="rgba(196,99,58,0.08)"/>
+          <path d="M11 22 L8 32 L18 28 L28 32 L25 22" stroke="#C4633A" stroke-width="1.8" stroke-linejoin="round" fill="rgba(196,99,58,0.06)"/>
+          <circle cx="18" cy="14" r="4" fill="rgba(196,99,58,0.2)" stroke="#C4633A" stroke-width="1.2"/>
+        </svg>
+      </div>
+      <div class="cert-body">
+        <span class="cert-type">Presentation</span>
+        <p class="cert-title">WHX Dubai — Presenter</p>
+        <p class="cert-org">World Health Exhibition Dubai</p>
+        <p class="cert-year">2024</p>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="cert-card">
+      <div class="cert-icon">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="14" r="9" stroke="#C4633A" stroke-width="1.8" fill="rgba(196,99,58,0.08)"/>
+          <path d="M11 22 L8 32 L18 28 L28 32 L25 22" stroke="#C4633A" stroke-width="1.8" stroke-linejoin="round" fill="rgba(196,99,58,0.06)"/>
+          <circle cx="18" cy="14" r="4" fill="rgba(196,99,58,0.2)" stroke="#C4633A" stroke-width="1.2"/>
+        </svg>
+      </div>
+      <div class="cert-body">
+        <span class="cert-type">Product</span>
+        <p class="cert-title">VR Simulation Design — Zoe Immersive Template</p>
+        <p class="cert-org">Dubai Health MBRU / Zoe Immersive</p>
+        <p class="cert-year">2024</p>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="cert-card">
+      <div class="cert-icon">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="14" r="9" stroke="#C4633A" stroke-width="1.8" fill="rgba(196,99,58,0.08)"/>
+          <path d="M11 22 L8 32 L18 28 L28 32 L25 22" stroke="#C4633A" stroke-width="1.8" stroke-linejoin="round" fill="rgba(196,99,58,0.06)"/>
+          <circle cx="18" cy="14" r="4" fill="rgba(196,99,58,0.2)" stroke="#C4633A" stroke-width="1.2"/>
+        </svg>
+      </div>
+      <div class="cert-body">
+        <span class="cert-type">Research</span>
+        <p class="cert-title">Eye Tracking Research — Web & Simulation</p>
+        <p class="cert-org">Dubai Health MBRU</p>
+        <p class="cert-year">2024</p>
+      </div>
+    </div>
+
+    <!-- 8 -->
+    <div class="cert-card">
+      <div class="cert-icon">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="14" r="9" stroke="#C4633A" stroke-width="1.8" fill="rgba(196,99,58,0.08)"/>
+          <path d="M11 22 L8 32 L18 28 L28 32 L25 22" stroke="#C4633A" stroke-width="1.8" stroke-linejoin="round" fill="rgba(196,99,58,0.06)"/>
+          <circle cx="18" cy="14" r="4" fill="rgba(196,99,58,0.2)" stroke="#C4633A" stroke-width="1.2"/>
+        </svg>
+      </div>
+      <div class="cert-body">
+        <span class="cert-type">Technical</span>
+        <p class="cert-title">H5P, Genially & LMS Proficiency</p>
+        <p class="cert-org">Professional Development</p>
+        <p class="cert-year">Ongoing</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="hadeel-farhan-portfolio.html" class="footer-logo">Hadeel Farhan</a>
+  <p class="footer-copy">© 2026 Hadeel Farhan. All rights reserved.</p>
+  <div class="footer-icons">
+    <a href="#" title="Analytics">📊</a>
+    <a href="mailto:hadeel@example.com" title="Email">✉️</a>
+    <a href="#" title="Download">⬇️</a>
+  </div>
+</footer>
+
+<script>
+  const cards = document.querySelectorAll('.cert-card');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+
+  cards.forEach((card, i) => {
+    card.style.transitionDelay = `${(i % 2) * 0.1}s`;
+    observer.observe(card);
+  });
+</script>
+</body>
+</html>

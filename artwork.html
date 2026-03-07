@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artwork — Hadeel Farhan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0EB;
+    --dark: #1A1A18;
+    --terracotta: #C4633A;
+    --muted: #8A8580;
+    --border: #E0D8D0;
+    --white: #FEFCFA;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 60px;
+    background: rgba(245, 240, 235, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--dark);
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--dark);
+    font-size: 14px;
+    opacity: 0.65;
+    transition: opacity 0.2s;
+  }
+  .nav-links a:hover { opacity: 1; }
+  .nav-links a.active { opacity: 1; color: var(--terracotta); font-weight: 500; }
+
+  /* PAGE HEADER */
+  .page-header {
+    padding: 130px 60px 52px;
+    max-width: 680px;
+  }
+  .page-tag {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 14px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.2s;
+  }
+  .page-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(34px, 5vw, 52px);
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: var(--dark);
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.35s;
+  }
+  .page-header p {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 420px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.5s;
+  }
+
+  /* MASONRY GRID */
+  .gallery-section { padding: 0 60px 120px; }
+
+  .masonry {
+    columns: 3;
+    column-gap: 16px;
+  }
+
+  .art-item {
+    break-inside: avoid;
+    margin-bottom: 16px;
+    cursor: pointer;
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .art-item.visible { opacity: 1; transform: translateY(0); }
+
+  .art-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+
+  /* Placeholder colored block when no real image */
+  .art-item .art-placeholder {
+    width: 100%;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+
+  .art-item:hover img,
+  .art-item:hover .art-placeholder { transform: scale(1.03); }
+
+  /* Hover overlay */
+  .art-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(26,26,24,0.75) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    display: flex;
+    align-items: flex-end;
+    padding: 18px;
+  }
+
+  .art-item:hover .art-overlay { opacity: 1; }
+
+  .overlay-text {
+    color: white;
+  }
+
+  .overlay-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 2px;
+  }
+
+  .overlay-meta {
+    font-size: 11px;
+    opacity: 0.75;
+  }
+
+  /* Caption below image */
+  .art-caption {
+    padding: 10px 2px 0;
+  }
+
+  .art-caption .title {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--dark);
+    line-height: 1.35;
+  }
+
+  .art-caption .meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* ── MODAL ── */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 26, 24, 0.88);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(6px);
+  }
+
+  .modal-backdrop.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal {
+    background: var(--white);
+    border-radius: 10px;
+    overflow: hidden;
+    max-width: 860px;
+    width: 100%;
+    max-height: 90vh;
+    display: flex;
+    transform: scale(0.95) translateY(12px);
+    transition: transform 0.3s ease;
+    position: relative;
+  }
+
+  .modal-backdrop.open .modal {
+    transform: scale(1) translateY(0);
+  }
+
+  .modal-image {
+    width: 55%;
+    flex-shrink: 0;
+    background: var(--border);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .modal-image .modal-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+  }
+
+  .modal-body {
+    padding: 44px 40px 40px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+  }
+
+  .modal-type {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    background: rgba(196,99,58,0.1);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 16px;
+  }
+
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--dark);
+    margin-bottom: 6px;
+  }
+
+  .modal-meta {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  .modal-divider {
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 20px;
+  }
+
+  .modal-desc {
+    font-size: 14.5px;
+    color: #4a4845;
+    line-height: 1.8;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 22px;
+    line-height: 1;
+    transition: color 0.2s;
+    z-index: 10;
+    padding: 4px;
+  }
+
+  .modal-close:hover { color: var(--dark); }
+
+  /* FOOTER */
+  footer {
+    padding: 28px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--dark);
+    text-decoration: none;
+  }
+  .footer-copy { font-size: 12.5px; color: var(--muted); }
+  .footer-icons { display: flex; gap: 20px; }
+  .footer-icons a { color: var(--muted); text-decoration: none; font-size: 17px; transition: color 0.2s; }
+  .footer-icons a:hover { color: var(--terracotta); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="hadeel-farhan-portfolio.html" class="nav-logo">Hadeel Farhan</a>
+  <ul class="nav-links">
+    <li><a href="hadeel-farhan-portfolio.html">Home</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="hadeel-farhan-projects.html">Projects</a></li>
+    <li><a href="hadeel-farhan-certificates.html">Certificates</a></li>
+    <li><a href="#" class="active">Artwork</a></li>
+  </ul>
+</nav>
+
+<!-- HEADER -->
+<div class="page-header">
+  <p class="page-tag">Gallery</p>
+  <h1>Art & Expression</h1>
+  <p>My paintings explore themes of memory, heritage, and place — often drawing from my Jordanian roots. Each piece is a conversation between the past and present.</p>
+</div>
+
+<!-- GALLERY -->
+<div class="gallery-section">
+  <div class="masonry" id="masonry">
+    <!-- Items injected by JS -->
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+    <div class="modal-image" id="modalImage">
+      <!-- image or placeholder -->
+    </div>
+    <div class="modal-body">
+      <span class="modal-type" id="modalType"></span>
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <p class="modal-meta" id="modalMeta"></p>
+      <div class="modal-divider"></div>
+      <p class="modal-desc" id="modalDesc"></p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="hadeel-farhan-portfolio.html" class="footer-logo">Hadeel Farhan</a>
+  <p class="footer-copy">© 2026 Hadeel Farhan. All rights reserved.</p>
+  <div class="footer-icons">
+    <a href="#" title="Analytics">📊</a>
+    <a href="mailto:hadeel@example.com" title="Email">✉️</a>
+    <a href="#" title="Download">⬇️</a>
+  </div>
+</footer>
+
+<script>
+  // ── Artwork data ──────────────────────────────────────────────
+  const artworks = [
+    {
+      id: 1,
+      title: "The Pattern That Still Breathes",
+      medium: "Mixed Media on Canvas",
+      year: "2025",
+      type: "Mixed Media",
+      desc: "An exploration of traditional Jordanian textile patterns — the intricate geometric forms carry generations of memory. The piece asks what it means to preserve cultural motifs in a world that moves faster than it remembers.",
+      aspect: 1.6,
+      colors: ["#8B2020", "#C4633A", "#F0E8D8", "#2A1A0A", "#D4A070"],
+      svgType: "pattern"
+    },
+    {
+      id: 2,
+      title: "Baba's Couch",
+      medium: "Oil on Canvas",
+      year: "2023",
+      type: "Oil",
+      desc: "A quiet domestic scene rendered in warm ochres and browns. The couch holds the imprint of presence — someone who has just left, or perhaps is always there. A meditation on belonging and the familiar.",
+      aspect: 0.82,
+      colors: ["#C8A060", "#8B6030", "#F0D8A0", "#4A3020", "#E8C880"],
+      svgType: "interior"
+    },
+    {
+      id: 3,
+      title: "The Shopkeeper's Spirit",
+      medium: "Acrylic on Canvas",
+      year: "2023",
+      type: "Acrylic",
+      desc: "Inspired by the market stalls of Amman's old city. A figure surrounded by piles of fruit and colour — the abundance of daily life elevated into something sacred.",
+      aspect: 0.88,
+      colors: ["#1A3A4A", "#F5A020", "#FF6030", "#2A4A3A", "#FFCC40"],
+      svgType: "market"
+    },
+    {
+      id: 4,
+      title: "Mesmerized",
+      medium: "Acrylic on Canvas",
+      year: "2023",
+      type: "Acrylic",
+      desc: "Two women bent over an illuminated manuscript, lost in its pages. The work references the long tradition of scholarship and devotion — a reminder that reading is itself a form of prayer.",
+      aspect: 1.1,
+      colors: ["#4A3020", "#C88040", "#8B6040", "#2A1A0A", "#D4A870"],
+      svgType: "figures"
+    },
+    {
+      id: 5,
+      title: "Al Salt, Jordan",
+      medium: "Acrylic on Canvas",
+      year: "2023",
+      type: "Acrylic",
+      desc: "The terraced hillside city of Al Salt, a UNESCO World Heritage Site. Painted from memory and longing — the white-gold stone buildings stacked against a sky full of movement.",
+      aspect: 0.7,
+      colors: ["#4A7A9B", "#A0C8D8", "#F0F0E8", "#2A5A6A", "#E8E0C0"],
+      svgType: "landscape"
+    },
+    {
+      id: 6,
+      title: "Hikaya",
+      medium: "Mixed Media on Canvas",
+      year: "2025",
+      type: "Mixed Media",
+      desc: "Hikaya — meaning 'story' in Arabic. A diptych of traditional embroidered dresses, each telling a different chapter. The red thread connects what time tries to separate.",
+      aspect: 0.75,
+      colors: ["#A83020", "#E8C0A0", "#8B2A18", "#F5E8D8", "#C84030"],
+      svgType: "dresses"
+    },
+    {
+      id: 7,
+      title: "Teita's House",
+      medium: "Acrylic on Canvas",
+      year: "2024",
+      type: "Acrylic",
+      desc: "Grandmother's house: a balcony overflowing with plants, shelves of books, afternoon light slanting across the floor. A place that exists now only in paint.",
+      aspect: 1.3,
+      colors: ["#3A5A2A", "#8BB060", "#C8D8A0", "#2A3A1A", "#F0E8C0"],
+      svgType: "house"
+    },
+    {
+      id: 8,
+      title: "Naseem",
+      medium: "Acrylic on Canvas",
+      year: "2023",
+      type: "Acrylic",
+      desc: "Naseem — breeze. Two small figures on the steps of a Jordanian alleyway, a hillside town spreading behind them. The painting captures a particular quality of afternoon air: unhurried, golden, gone.",
+      aspect: 1.4,
+      colors: ["#F0E0C0", "#C8A060", "#8B6030", "#A8C8A0", "#4A6A3A"],
+      svgType: "street"
+    },
+    {
+      id: 9,
+      title: "Baba's Pool",
+      medium: "Oil on Canvas",
+      year: "2024",
+      type: "Oil",
+      desc: "A summer afternoon suspended in paint. The pool's blue is cool against the warm ochre and red of the surroundings — a place of stillness in the middle of everything.",
+      aspect: 0.78,
+      colors: ["#1A5A8A", "#F0C030", "#C83020", "#2A4A6A", "#F0F0A0"],
+      svgType: "pool"
+    },
+    {
+      id: 10,
+      title: "The Other Side",
+      medium: "Acrylic on Canvas",
+      year: "2023",
+      type: "Acrylic",
+      desc: "A cat sits in a doorway, half in light, half in shadow. The threshold as metaphor — the space between inside and outside, between memory and the present moment.",
+      aspect: 0.9,
+      colors: ["#7C5C3E", "#C8A870", "#4A3020", "#A88060", "#2A1A10"],
+      svgType: "doorway"
+    },
+    {
+      id: 11,
+      title: "Did You Forget Me?",
+      medium: "Acrylic on Canvas",
+      year: "2024",
+      type: "Acrylic",
+      desc: "An archway in deep violet and grey. A figure carved in stone at the base — watching, waiting. The question in the title is addressed to no one in particular, and everyone.",
+      aspect: 1.25,
+      colors: ["#4A3A6A", "#8A70A0", "#2A1A4A", "#C0A8C0", "#1A1028"],
+      svgType: "arch"
+    }
+  ];
+
+  // ── SVG generators for each artwork type ─────────────────────
+  function makeSVG(art, w, h) {
+    const c = art.colors;
+    const t = art.svgType;
+    const vw = 400, vh = Math.round(400 / art.aspect);
+
+    const bodies = {
+      pattern: `
+        <rect width="${vw}" height="${vh}" fill="${c[3]}"/>
+        ${[...Array(6)].map((_, i) => `
+          <rect x="${30 + i * 58}" y="10" width="38" height="${vh - 20}" rx="4" fill="${c[i % 2 === 0 ? 0 : 1]}" opacity="0.9"/>
+          ${[...Array(Math.floor((vh - 20) / 35))].map((_, j) => `
+            <circle cx="${49 + i * 58}" cy="${28 + j * 35}" r="12" fill="${c[2]}" opacity="0.15"/>
+            <circle cx="${49 + i * 58}" cy="${28 + j * 35}" r="6" fill="${c[4]}" opacity="0.4"/>
+            <circle cx="${49 + i * 58}" cy="${28 + j * 35}" r="2" fill="${c[1]}" opacity="0.8"/>
+          `).join('')}
+        `).join('')}`,
+
+      interior: `
+        <rect width="${vw}" height="${vh}" fill="${c[3]}"/>
+        <rect x="0" y="${vh * 0.55}" width="${vw}" height="${vh * 0.45}" fill="${c[0]}" opacity="0.4"/>
+        <rect x="40" y="${vh * 0.25}" width="${vw - 80}" height="${vh * 0.4}" rx="8" fill="${c[1]}" opacity="0.7"/>
+        <rect x="60" y="${vh * 0.3}" width="${vw - 120}" height="${vh * 0.28}" rx="4" fill="${c[4]}" opacity="0.5"/>
+        <ellipse cx="${vw / 2}" cy="${vh * 0.55}" rx="60" ry="8" fill="${c[3]}" opacity="0.5"/>
+        <ellipse cx="${vw / 2}" cy="${vh * 0.36}" rx="30" ry="12" fill="${c[0]}" opacity="0.4"/>`,
+
+      market: `
+        <rect width="${vw}" height="${vh}" fill="${c[0]}"/>
+        <rect x="0" y="${vh * 0.6}" width="${vw}" height="${vh * 0.4}" fill="${c[3]}" opacity="0.6"/>
+        ${[...Array(8)].map((_, i) => `
+          <circle cx="${30 + i * 48}" cy="${vh * 0.55}" r="${14 + (i % 3) * 5}" fill="${i % 2 === 0 ? c[1] : c[2]}" opacity="0.85"/>
+        `).join('')}
+        <ellipse cx="${vw * 0.5}" cy="${vh * 0.35}" rx="35" ry="60" fill="${c[0]}" opacity="0.5"/>
+        <ellipse cx="${vw * 0.5}" cy="${vh * 0.25}" rx="20" ry="35" fill="${c[3]}" opacity="0.7"/>`,
+
+      figures: `
+        <rect width="${vw}" height="${vh}" fill="${c[3]}"/>
+        <ellipse cx="${vw * 0.38}" cy="${vh * 0.55}" rx="55" ry="100" fill="${c[0]}" opacity="0.9"/>
+        <ellipse cx="${vw * 0.38}" cy="${vh * 0.22}" rx="28" ry="32" fill="${c[2]}" opacity="0.9"/>
+        <ellipse cx="${vw * 0.62}" cy="${vh * 0.55}" rx="45" ry="90" fill="${c[1]}" opacity="0.85"/>
+        <ellipse cx="${vw * 0.62}" cy="${vh * 0.24}" rx="24" ry="28" fill="${c[4]}" opacity="0.9"/>
+        <rect x="${vw * 0.18}" y="${vh * 0.68}" width="${vw * 0.64}" height="${vh * 0.2}" rx="6" fill="${c[4]}" opacity="0.6"/>
+        <rect x="${vw * 0.22}" y="${vh * 0.7}" width="${vw * 0.56}" height="${vh * 0.14}" rx="4" fill="${c[0]}" opacity="0.3"/>`,
+
+      landscape: `
+        <rect width="${vw}" height="${vh}" fill="${c[1]}"/>
+        <rect x="0" y="${vh * 0.4}" width="${vw}" height="${vh * 0.6}" fill="${c[4]}" opacity="0.9"/>
+        <path d="M0,${vh * 0.5} Q${vw * 0.25},${vh * 0.35} ${vw * 0.5},${vh * 0.45} Q${vw * 0.75},${vh * 0.55} ${vw},${vh * 0.4} L${vw},${vh} L0,${vh}Z" fill="${c[3]}" opacity="0.7"/>
+        ${[...Array(5)].map((_, i) => `
+          <rect x="${40 + i * 70}" y="${vh * 0.45 - i * 10}" width="20" height="${30 + i * 8}" rx="3" fill="${c[4]}" opacity="0.8"/>
+          <rect x="${42 + i * 70}" y="${vh * 0.45 - i * 10}" width="16" height="${18 + i * 4}" fill="${c[0]}" opacity="0.5"/>
+        `).join('')}`,
+
+      dresses: `
+        <rect width="${vw}" height="${vh}" fill="${c[4]}"/>
+        <rect x="${vw * 0.05}" y="${vh * 0.05}" width="${vw * 0.42}" height="${vh * 0.88}" rx="6" fill="${c[0]}" opacity="0.9"/>
+        <rect x="${vw * 0.53}" y="${vh * 0.05}" width="${vw * 0.42}" height="${vh * 0.88}" rx="6" fill="${c[2]}" opacity="0.9"/>
+        ${[...Array(6)].map((_, i) => `
+          <rect x="${vw * 0.08 + (i % 3) * 18}" y="${vh * 0.2 + Math.floor(i / 3) * 60}" width="14" height="14" rx="2" fill="${c[4]}" opacity="0.5"/>
+          <rect x="${vw * 0.56 + (i % 3) * 18}" y="${vh * 0.2 + Math.floor(i / 3) * 60}" width="14" height="14" rx="2" fill="${c[4]}" opacity="0.4"/>
+        `).join('')}`,
+
+      house: `
+        <rect width="${vw}" height="${vh}" fill="${c[1]}"/>
+        <rect x="0" y="${vh * 0.6}" width="${vw}" height="${vh * 0.4}" fill="${c[3]}" opacity="0.8"/>
+        <rect x="${vw * 0.1}" y="${vh * 0.15}" width="${vw * 0.8}" height="${vh * 0.65}" rx="4" fill="${c[2]}" opacity="0.7"/>
+        ${[...Array(4)].map((_, i) => `
+          <rect x="${vw * 0.14 + i * (vw * 0.18)}" y="${vh * 0.25}" width="${vw * 0.12}" height="${vh * 0.18}" rx="2" fill="${c[4]}" opacity="0.6"/>
+        `).join('')}
+        ${[...Array(6)].map((_, i) => `
+          <ellipse cx="${vw * 0.12 + i * (vw * 0.15)}" cy="${vh * 0.55}" rx="8" ry="${14 + i * 3}" fill="${c[0]}" opacity="0.8"/>
+        `).join('')}`,
+
+      street: `
+        <rect width="${vw}" height="${vh}" fill="${c[0]}"/>
+        <rect x="0" y="${vh * 0.55}" width="${vw}" height="${vh * 0.45}" fill="${c[1]}" opacity="0.6"/>
+        <rect x="${vw * 0.3}" y="${vh * 0.1}" width="${vw * 0.4}" height="${vh * 0.65}" fill="${c[4]}" opacity="0.5"/>
+        <ellipse cx="${vw * 0.35}" cy="${vh * 0.72}" rx="12" ry="20" fill="${c[3]}" opacity="0.85"/>
+        <ellipse cx="${vw * 0.35}" cy="${vh * 0.62}" rx="10" ry="12" fill="${c[2]}" opacity="0.8"/>
+        <ellipse cx="${vw * 0.55}" cy="${vh * 0.75}" rx="10" ry="16" fill="${c[3]}" opacity="0.75"/>
+        <ellipse cx="${vw * 0.55}" cy="${vh * 0.65}" rx="8" ry="10" fill="${c[2]}" opacity="0.7"/>
+        ${[...Array(8)].map((_, i) => `
+          <rect x="${20 + i * 44}" y="${vh * 0.12 + (i % 3) * 12}" width="28" height="${20 + (i % 4) * 8}" rx="2" fill="${c[1]}" opacity="0.4"/>
+        `).join('')}`,
+
+      pool: `
+        <rect width="${vw}" height="${vh}" fill="${c[4]}"/>
+        <rect x="${vw * 0.1}" y="${vh * 0.3}" width="${vw * 0.8}" height="${vh * 0.5}" rx="40" fill="${c[0]}" opacity="0.9"/>
+        <rect x="${vw * 0.12}" y="${vh * 0.32}" width="${vw * 0.76}" height="${vh * 0.46}" rx="36" fill="${c[0]}" opacity="0.6"/>
+        <rect x="0" y="0" width="${vw}" height="${vh * 0.35}" fill="${c[1]}" opacity="0.7"/>
+        <rect x="0" y="${vh * 0.78}" width="${vw}" height="${vh * 0.22}" fill="${c[2]}" opacity="0.6"/>
+        <circle cx="${vw * 0.8}" cy="${vh * 0.2}" r="25" fill="${c[3]}" opacity="0.8"/>`,
+
+      doorway: `
+        <rect width="${vw}" height="${vh}" fill="${c[1]}"/>
+        <rect x="${vw * 0.15}" y="${vh * 0.05}" width="${vw * 0.7}" height="${vh * 0.88}" rx="${vw * 0.35} ${vw * 0.35} 0 0" fill="${c[3]}" opacity="0.8"/>
+        <rect x="${vw * 0.22}" y="${vh * 0.12}" width="${vw * 0.56}" height="${vh * 0.74}" rx="${vw * 0.28} ${vw * 0.28} 0 0" fill="${c[0]}" opacity="0.6"/>
+        <ellipse cx="${vw / 2}" cy="${vh * 0.75}" rx="22" ry="18" fill="${c[3]}" opacity="0.85"/>
+        <ellipse cx="${vw / 2}" cy="${vh * 0.65}" rx="15" ry="18" fill="${c[4]}" opacity="0.8"/>`,
+
+      arch: `
+        <rect width="${vw}" height="${vh}" fill="${c[2]}"/>
+        <rect x="${vw * 0.1}" y="${vh * 0.04}" width="${vw * 0.8}" height="${vh * 0.9}" rx="${vw * 0.4} ${vw * 0.4} 0 0" fill="none" stroke="${c[1]}" stroke-width="18"/>
+        <rect x="${vw * 0.18}" y="${vh * 0.1}" width="${vw * 0.64}" height="${vh * 0.76}" rx="${vw * 0.32} ${vw * 0.32} 0 0" fill="${c[0]}" opacity="0.25"/>
+        <ellipse cx="${vw / 2}" cy="${vh * 0.82}" rx="18" ry="28" fill="${c[3]}" opacity="0.6"/>
+        <ellipse cx="${vw / 2}" cy="${vh * 0.7}" rx="12" ry="14" fill="${c[4]}" opacity="0.5"/>
+        ${[...Array(3)].map((_, i) => `
+          <rect x="${vw * 0.2 + i * (vw * 0.22)}" y="${vh * 0.35}" width="${vw * 0.14}" height="${vh * 0.2}" rx="2" fill="${c[1]}" opacity="0.3"/>
+        `).join('')}`
+    };
+
+    return `<svg viewBox="0 0 ${vw} ${vh}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
+      ${bodies[t] || bodies.interior}
+    </svg>`;
+  }
+
+  // ── Render masonry ────────────────────────────────────────────
+  const masonry = document.getElementById('masonry');
+
+  artworks.forEach((art, idx) => {
+    const item = document.createElement('div');
+    item.className = 'art-item';
+    item.style.transitionDelay = `${(idx % 3) * 0.08}s`;
+    item.dataset.id = art.id;
+
+    item.innerHTML = `
+      <div class="art-placeholder">${makeSVG(art, 400, Math.round(400 / art.aspect))}</div>
+      <div class="art-overlay">
+        <div class="overlay-text">
+          <div class="overlay-title">${art.title}</div>
+          <div class="overlay-meta">${art.medium}, ${art.year}</div>
+        </div>
+      </div>
+      <div class="art-caption">
+        <div class="title">${art.title}</div>
+        <div class="meta">${art.medium}, ${art.year}</div>
+      </div>`;
+
+    item.addEventListener('click', () => openModal(art));
+    masonry.appendChild(item);
+  });
+
+  // ── Scroll reveal ─────────────────────────────────────────────
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
+    });
+  }, { threshold: 0.05 });
+
+  document.querySelectorAll('.art-item').forEach(el => revealObs.observe(el));
+
+  // ── Modal ─────────────────────────────────────────────────────
+  const backdrop = document.getElementById('modalBackdrop');
+  const modalClose = document.getElementById('modalClose');
+
+  function openModal(art) {
+    document.getElementById('modalType').textContent = art.type;
+    document.getElementById('modalTitle').textContent = art.title;
+    document.getElementById('modalMeta').textContent = `${art.medium} · ${art.year}`;
+    document.getElementById('modalDesc').textContent = art.desc;
+
+    const imgEl = document.getElementById('modalImage');
+    imgEl.innerHTML = makeSVG(art, 460, Math.round(460 / art.aspect));
+    imgEl.querySelector('svg').style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+
+    backdrop.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    backdrop.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  modalClose.addEventListener('click', closeModal);
+  backdrop.addEventListener('click', e => { if (e.target === backdrop) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>

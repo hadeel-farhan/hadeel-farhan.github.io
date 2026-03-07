@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Hadeel Farhan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0EB;
+    --dark: #1A1A18;
+    --terracotta: #C4633A;
+    --terracotta-light: #D4774E;
+    --muted: #8A8580;
+    --border: #E0D8D0;
+    --white: #FEFCFA;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 60px;
+    background: rgba(245, 240, 235, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px; font-weight: 700;
+    color: var(--dark); text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: var(--dark);
+    font-size: 14px; opacity: 0.65;
+    transition: opacity 0.2s;
+  }
+  .nav-links a:hover { opacity: 1; }
+  .nav-links a.active { opacity: 1; color: var(--terracotta); font-weight: 500; }
+
+  /* ── BIO SECTION ── */
+  .bio-section {
+    max-width: 700px;
+    padding: 130px 60px 80px;
+  }
+
+  .page-tag {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--terracotta); margin-bottom: 18px;
+    opacity: 0; animation: fadeUp 0.6s ease forwards 0.2s;
+  }
+
+  .bio-section h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 4.5vw, 50px);
+    font-weight: 900; letter-spacing: -0.025em;
+    line-height: 1.1; color: var(--dark);
+    margin-bottom: 32px;
+    opacity: 0; animation: fadeUp 0.6s ease forwards 0.35s;
+  }
+
+  .bio-paras {
+    opacity: 0; animation: fadeUp 0.6s ease forwards 0.5s;
+  }
+
+  .bio-paras p {
+    font-size: 15px; color: #4a4845;
+    line-height: 1.85; margin-bottom: 20px;
+  }
+  .bio-paras p:last-child { margin-bottom: 0; }
+
+  /* ── APPROACH SUB-SECTION ── */
+  .approach-section {
+    max-width: 700px;
+    padding: 0 60px 100px;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .approach-section.visible { opacity: 1; transform: translateY(0); }
+
+  .approach-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px; font-weight: 700;
+    letter-spacing: -0.015em; color: var(--dark);
+    margin-bottom: 16px;
+  }
+
+  .approach-section p {
+    font-size: 15px; color: #4a4845;
+    line-height: 1.85; margin-bottom: 16px;
+  }
+  .approach-section p:last-child { margin-bottom: 0; }
+
+  /* ── TIMELINE SECTIONS (shared) ── */
+  .timeline-section {
+    padding: 80px 60px;
+    border-top: 1px solid var(--border);
+  }
+
+  .timeline-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 700; letter-spacing: -0.02em;
+    color: var(--dark); margin-bottom: 52px;
+  }
+
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .timeline-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 0 32px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .timeline-row:first-child { border-top: 1px solid var(--border); }
+  .timeline-row.visible { opacity: 1; transform: translateY(0); }
+
+  .timeline-date {
+    font-size: 13px; font-weight: 500;
+    color: var(--terracotta);
+    padding-top: 2px;
+    letter-spacing: 0.01em;
+  }
+
+  .timeline-content {}
+
+  .timeline-role {
+    font-size: 15px; font-weight: 600;
+    color: var(--dark); margin-bottom: 3px;
+    letter-spacing: -0.01em;
+  }
+
+  .timeline-org {
+    font-size: 13px; color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .timeline-desc {
+    font-size: 13.5px; color: #5a5855;
+    line-height: 1.7;
+  }
+
+  /* Courses tags */
+  .courses-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 10px;
+  }
+
+  .course-tag {
+    font-size: 11px; font-weight: 400;
+    color: var(--muted);
+    background: rgba(138,133,128,0.1);
+    border: 1px solid var(--border);
+    padding: 3px 10px; border-radius: 20px;
+    letter-spacing: 0.01em;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .course-tag:hover {
+    background: rgba(196,99,58,0.08);
+    color: var(--terracotta);
+    border-color: rgba(196,99,58,0.2);
+  }
+
+  .courses-label {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.07em; text-transform: uppercase;
+    color: var(--muted); margin-top: 12px; margin-bottom: 6px;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 28px 60px;
+    display: flex; align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px; font-weight: 700;
+    color: var(--dark); text-decoration: none;
+  }
+  .footer-copy { font-size: 12.5px; color: var(--muted); }
+  .footer-icons { display: flex; gap: 20px; }
+  .footer-icons a { color: var(--muted); text-decoration: none; font-size: 17px; transition: color 0.2s; }
+  .footer-icons a:hover { color: var(--terracotta); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="hadeel-farhan-portfolio.html" class="nav-logo">Hadeel Farhan</a>
+  <ul class="nav-links">
+    <li><a href="hadeel-farhan-portfolio.html">Home</a></li>
+    <li><a href="#" class="active">About</a></li>
+    <li><a href="hadeel-farhan-projects.html">Projects</a></li>
+    <li><a href="hadeel-farhan-certificates.html">Certificates</a></li>
+    <li><a href="hadeel-farhan-artwork.html">Artwork</a></li>
+  </ul>
+</nav>
+
+<!-- BIO -->
+<div class="bio-section">
+  <p class="page-tag">About</p>
+  <h1>Building at the intersection of technology and human experience.</h1>
+  <div class="bio-paras">
+    <p>I'm Hadeel — a product builder, computer scientist, and artist based in Dubai, UAE. My work is driven by a simple belief: technology is most powerful when it's designed around people.</p>
+    <p>With a Computer Science degree from Northeastern University — concentrating in Human-Centered Computing with a minor in Interaction Design — I've spent my career weaving together technical depth with design empathy. From building satellite data interfaces at NASA to creating VR clinical simulations at Dubai Health, I approach every project as an opportunity to understand the humans who will use it.</p>
+    <p>Currently, I work as an EdTech Product Manager at Dubai Health's Mohammed Bin Rashid University of Medicine and Health Sciences, where I develop immersive learning experiences, co-create AI literacy frameworks, and design educational tools that reach thousands of healthcare professionals across the UAE.</p>
+  </div>
+</div>
+
+<!-- APPROACH -->
+<div class="approach-section" id="approach">
+  <h2>My Approach</h2>
+  <p>I believe great products emerge from genuine curiosity about the people they serve. My process always starts with listening — through user research, eye-tracking studies, observation, and conversation — before moving to design and code.</p>
+  <p>Whether it's a VR simulation, an interactive educational game, or an AI literacy course, I aim to create experiences that feel intuitive, purposeful, and human.</p>
+</div>
+
+<!-- EXPERIENCE -->
+<div class="timeline-section" id="experience">
+  <h2>Experience</h2>
+  <div class="timeline">
+
+    <div class="timeline-row">
+      <div class="timeline-date">2024 – Present</div>
+      <div class="timeline-content">
+        <div class="timeline-role">EdTech Product Manager</div>
+        <div class="timeline-org">Dubai Health MBRU, Dubai</div>
+        <div class="timeline-desc">Building VR simulations, AI literacy frameworks, and interactive learning experiences for healthcare education.</div>
+      </div>
+    </div>
+
+    <div class="timeline-row">
+      <div class="timeline-date">2022</div>
+      <div class="timeline-content">
+        <div class="timeline-role">Software Engineer Co-op</div>
+        <div class="timeline-org">Kythera Space Solutions, Maryland</div>
+        <div class="timeline-desc">Designed API endpoints and built integration tests for SATCOM optimization software.</div>
+      </div>
+    </div>
+
+    <div class="timeline-row">
+      <div class="timeline-date">2022</div>
+      <div class="timeline-content">
+        <div class="timeline-role">Software Developer Intern</div>
+        <div class="timeline-org">NASA Marshall Space Flight Center, Alabama</div>
+        <div class="timeline-desc">Built an API and interface for NASA's Commercial Smallsat Data Acquisition program.</div>
+      </div>
+    </div>
+
+    <div class="timeline-row">
+      <div class="timeline-date">2022</div>
+      <div class="timeline-content">
+        <div class="timeline-role">UI/UX Designer</div>
+        <div class="timeline-org">Generate at Northeastern University, Boston</div>
+        <div class="timeline-desc">Designed a platform connecting artists and music to playlist curators.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- EDUCATION -->
+<div class="timeline-section" id="education">
+  <h2>Education</h2>
+  <div class="timeline">
+
+    <div class="timeline-row">
+      <div class="timeline-date">2019 – 2023</div>
+      <div class="timeline-content">
+        <div class="timeline-role">B.S. Computer Science</div>
+        <div class="timeline-org">Northeastern University, Boston</div>
+        <div class="timeline-desc">Human-Centered Computing concentration, Interaction Design minor. GPA: 3.6/4.0.</div>
+        <div class="courses-label">Relevant Courses</div>
+        <div class="courses-list">
+          <span class="course-tag">Human-Computer Interaction</span>
+          <span class="course-tag">User Experience Design</span>
+          <span class="course-tag">Algorithms & Data Structures</span>
+          <span class="course-tag">Object-Oriented Design</span>
+          <span class="course-tag">Foundations of AI</span>
+          <span class="course-tag">Database Design</span>
+          <span class="course-tag">Computer Vision</span>
+          <span class="course-tag">Software Engineering</span>
+          <span class="course-tag">Interaction Design</span>
+          <span class="course-tag">Web Development</span>
+          <span class="course-tag">Accessibility in Computing</span>
+          <span class="course-tag">Game Design</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="hadeel-farhan-portfolio.html" class="footer-logo">Hadeel Farhan</a>
+  <p class="footer-copy">© 2026 Hadeel Farhan. All rights reserved.</p>
+  <div class="footer-icons">
+    <a href="#" title="Analytics">📊</a>
+    <a href="mailto:hadeel@example.com" title="Email">✉️</a>
+    <a href="#" title="Download">⬇️</a>
+  </div>
+</footer>
+
+<script>
+  const revealEls = document.querySelectorAll('.approach-section, .timeline-row');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        // stagger rows within same parent
+        const siblings = [...entry.target.parentElement.querySelectorAll('.timeline-row')];
+        const idx = siblings.indexOf(entry.target);
+        const delay = entry.target.classList.contains('timeline-row') ? idx * 60 : 0;
+        setTimeout(() => entry.target.classList.add('visible'), delay);
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+
+  revealEls.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
