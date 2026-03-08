@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VR Patient Triage Simulation — Hadeel Farhan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0EB;
+    --dark: #1A1A18;
+    --terracotta: #C4633A;
+    --terracotta-light: #D4774E;
+    --muted: #8A8580;
+    --border: #E0D8D0;
+    --white: #FEFCFA;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 60px;
+    background: rgba(245, 240, 235, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--dark);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--dark);
+    font-size: 14px;
+    font-weight: 400;
+    opacity: 0.65;
+    transition: opacity 0.2s;
+  }
+
+  .nav-links a:hover { opacity: 1; }
+  .nav-links a.active { opacity: 1; color: var(--terracotta); font-weight: 500; }
+
+  /* MAIN CONTENT */
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 110px 40px 100px;
+  }
+
+  /* BACK LINK */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13.5px;
+    margin-bottom: 36px;
+    transition: color 0.2s, gap 0.2s;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards 0.1s;
+  }
+
+  .back-link:hover { color: var(--dark); gap: 10px; }
+  .back-link .arrow { font-size: 15px; }
+
+  /* TAGS */
+  .tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards 0.2s;
+  }
+
+  .tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    background: rgba(196,99,58,0.1);
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+
+  /* TITLE */
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 4.5vw, 46px);
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: var(--dark);
+    margin-bottom: 14px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards 0.3s;
+  }
+
+  .subtitle {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 44px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards 0.4s;
+  }
+
+  /* HERO IMAGE */
+  .hero-image {
+    width: 100%;
+    aspect-ratio: 16/10;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 60px;
+    background: var(--border);
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.5s;
+  }
+
+  .hero-image svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* CONTENT SECTIONS */
+  .content-section {
+    margin-bottom: 44px;
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .content-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .content-section h2 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .content-section p {
+    font-size: 15px;
+    color: #4a4845;
+    line-height: 1.8;
+  }
+
+  /* FEATURE LIST */
+  .feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .feature-list li {
+    font-size: 15px;
+    color: #4a4845;
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.6;
+  }
+
+  .feature-list li::before {
+    content: '·';
+    position: absolute;
+    left: 6px;
+    color: var(--terracotta);
+    font-size: 18px;
+    line-height: 1.4;
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 52px 0;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 28px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    background: var(--cream);
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--dark);
+    text-decoration: none;
+  }
+
+  .footer-copy { font-size: 12.5px; color: var(--muted); }
+
+  .footer-icons { display: flex; gap: 20px; }
+  .footer-icons a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 17px;
+    transition: color 0.2s;
+  }
+  .footer-icons a:hover { color: var(--terracotta); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="hadeel-farhan-portfolio.html" class="nav-logo">Hadeel Farhan</a>
+  <ul class="nav-links">
+    <li><a href="hadeel-farhan-portfolio.html">Home</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="hadeel-farhan-projects.html" class="active">Projects</a></li>
+    <li><a href="#">Certificates</a></li>
+    <li><a href="#">Artwork</a></li>
+  </ul>
+</nav>
+
+<!-- MAIN -->
+<main>
+
+  <a href="hadeel-farhan-projects.html" class="back-link">
+    <span class="arrow">←</span> All Projects
+  </a>
+
+  <div class="tags">
+    <span class="tag">VR</span>
+    <span class="tag">EdTech</span>
+    <span class="tag">Healthcare</span>
+    <span class="tag">Product Design</span>
+  </div>
+
+  <h1>VR Patient Triage Simulation</h1>
+  <p class="subtitle">Immersive clinical decision-making in safe environments</p>
+
+  <!-- HERO IMAGE -->
+  <div class="hero-image">
+    <svg viewBox="0 0 760 475" xmlns="http://www.w3.org/2000/svg">
+      <!-- Background: concrete/grey surface texture -->
+      <rect width="760" height="475" fill="#2a2a28"/>
+      <!-- Noise texture suggestion via small rects -->
+      <rect x="0" y="0" width="760" height="475" fill="url(#noise)" opacity="0.08"/>
+      <defs>
+        <filter id="noise">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/>
+          <feColorMatrix type="saturate" values="0"/>
+        </filter>
+        <filter id="blur2">
+          <feGaussianBlur stdDeviation="2"/>
+        </filter>
+      </defs>
+      <!-- Shadow ground layer -->
+      <rect x="0" y="300" width="760" height="175" fill="#1a1a18" opacity="0.5"/>
+
+      <!-- Colorful triage classification board - grid of colored blocks -->
+      <!-- Row 1 -->
+      <rect x="80" y="40" width="85" height="85" rx="5" fill="#2d8c2d"/>
+      <rect x="175" y="40" width="85" height="85" rx="5" fill="#c8f5a0"/>
+      <rect x="270" y="40" width="85" height="85" rx="5" fill="#2d8c2d"/>
+      <rect x="365" y="40" width="85" height="85" rx="5" fill="#c8f5a0"/>
+      <!-- Row 2 -->
+      <rect x="80" y="135" width="85" height="85" rx="5" fill="#e63c2f"/>
+      <rect x="175" y="135" width="85" height="85" rx="5" fill="#f5a623"/>
+      <rect x="270" y="135" width="85" height="85" rx="5" fill="#e63c2f"/>
+      <rect x="365" y="135" width="85" height="85" rx="5" fill="#f5a623"/>
+      <!-- Row 3 - dots/icons on blocks -->
+      <rect x="80" y="230" width="85" height="85" rx="5" fill="#c8f5a0"/>
+      <rect x="175" y="230" width="85" height="85" rx="5" fill="#2d8c2d"/>
+      <rect x="270" y="230" width="85" height="85" rx="5" fill="#f5a623"/>
+      <rect x="365" y="230" width="85" height="85" rx="5" fill="#e63c2f"/>
+
+      <!-- Dots overlay on blocks -->
+      <circle cx="122" cy="82" r="8" fill="#1a3d1a" opacity="0.5"/>
+      <circle cx="217" cy="82" r="8" fill="#1a3d1a" opacity="0.3"/>
+      <circle cx="407" cy="82" r="8" fill="#1a3d1a" opacity="0.3"/>
+
+      <!-- Medical supply box / ALS BLS items (lower left) -->
+      <rect x="80" y="340" width="190" height="100" rx="8" fill="#1e2a1e" stroke="#3d5a3d" stroke-width="1.5"/>
+      <!-- ALS label boxes -->
+      <rect x="95" y="358" width="75" height="35" rx="4" fill="#e63c2f"/>
+      <text x="132" y="381" font-size="14" text-anchor="middle" fill="white" font-family="sans-serif" font-weight="bold">ALS</text>
+      <rect x="180" y="358" width="75" height="35" rx="4" fill="#e63c2f"/>
+      <text x="217" y="381" font-size="14" text-anchor="middle" fill="white" font-family="sans-serif" font-weight="bold">BLS</text>
+      <!-- Small items below -->
+      <rect x="95" y="403" width="35" height="25" rx="3" fill="#3a3a38"/>
+      <rect x="138" y="403" width="35" height="25" rx="3" fill="#3a3a38"/>
+      <rect x="181" y="403" width="35" height="25" rx="3" fill="#3a3a38"/>
+
+      <!-- Circular dial/token set (right side) -->
+      <rect x="460" y="60" width="240" height="180" rx="8" fill="#1a1a18" stroke="#3a3a38" stroke-width="1.5"/>
+      <!-- Token grid 4x3 -->
+      <circle cx="495" cy="100" r="22" fill="#2a2a28" stroke="#5a5a58" stroke-width="1.5"/>
+      <text x="495" y="106" font-size="14" text-anchor="middle" fill="#aaa">↺</text>
+      <circle cx="550" cy="100" r="22" fill="#2a2a28" stroke="#5a5a58" stroke-width="1.5"/>
+      <text x="550" y="106" font-size="14" text-anchor="middle" fill="#aaa">↺</text>
+      <circle cx="605" cy="100" r="22" fill="#2a2a28" stroke="#5a5a58" stroke-width="1.5"/>
+      <text x="605" y="106" font-size="14" text-anchor="middle" fill="#aaa">↻</text>
+      <circle cx="660" cy="100" r="22" fill="#2a2a28" stroke="#5a5a58" stroke-width="1.5"/>
+      <text x="660" y="106" font-size="14" text-anchor="middle" fill="#aaa">↺</text>
+
+      <circle cx="495" cy="155" r="22" fill="#2a2a28" stroke="#5a5a58" stroke-width="1.5"/>
+      <text x="495" y="161" font-size="14" text-anchor="middle" fill="#aaa">↻</text>
+      <circle cx="550" cy="155" r="22" fill="#2a2a28" stroke="#5a5a58" stroke-width="1.5"/>
+      <text x="550" y="161" font-size="12" text-anchor="middle" fill="#aaa">⟳</text>
+      <circle cx="605" cy="155" r="22" fill="#2a2a28" stroke="#5a5a58" stroke-width="1.5"/>
+      <text x="605" y="161" font-size="14" text-anchor="middle" fill="#aaa">↺</text>
+      <circle cx="660" cy="155" r="22" fill="#2a2a28" stroke="#5a5a58" stroke-width="1.5"/>
+      <text x="660" y="161" font-size="12" text-anchor="middle" fill="#aaa">⟳</text>
+
+      <circle cx="495" cy="210" r="22" fill="#2a2a28" stroke="#5a5a58" stroke-width="1.5"/>
+      <circle cx="550" cy="210" r="22" fill="#2a2a28" stroke="#5a5a58" stroke-width="1.5"/>
+      <circle cx="605" cy="210" r="22" fill="#2a2a28" stroke="#5a5a58" stroke-width="1.5"/>
+      <circle cx="660" cy="210" r="22" fill="#2a2a28" stroke="#5a5a58" stroke-width="1.5"/>
+
+      <!-- Labels on tokens -->
+      <text x="495" y="216" font-size="9" text-anchor="middle" fill="#6a6a68">01</text>
+      <text x="550" y="216" font-size="9" text-anchor="middle" fill="#6a6a68">02</text>
+      <text x="605" y="216" font-size="9" text-anchor="middle" fill="#6a6a68">03</text>
+      <text x="660" y="216" font-size="9" text-anchor="middle" fill="#6a6a68">04</text>
+
+      <!-- Small red cross card bottom right -->
+      <rect x="460" y="300" width="240" height="160" rx="8" fill="#f0f0ee" stroke="#e0e0dc" stroke-width="1"/>
+      <!-- Cross symbol -->
+      <rect x="545" y="325" width="70" height="22" rx="3" fill="#e63c2f"/>
+      <rect x="566" y="310" width="22" height="52" rx="3" fill="#e63c2f"/>
+      <text x="580" y="400" font-size="11" text-anchor="middle" fill="#8a8a88" font-family="sans-serif">TRIAGE CARD</text>
+      <rect x="475" y="375" width="210" height="8" rx="2" fill="#e8e4e0"/>
+      <rect x="475" y="390" width="170" height="8" rx="2" fill="#e8e4e0"/>
+      <rect x="475" y="405" width="190" height="8" rx="2" fill="#e8e4e0"/>
+
+      <!-- Subtle bottom shadow -->
+      <rect x="0" y="430" width="760" height="45" fill="url(#shadowGrad)"/>
+      <defs>
+        <linearGradient id="shadowGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="transparent"/>
+          <stop offset="100%" stop-color="#1a1a18" stop-opacity="0.4"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+
+  <!-- SECTIONS -->
+  <div class="content-section">
+    <h2>Adaa Website Development | 2025</h2>
+    <p>Blue Café is an educational website designed to support an Autism Awareness café initiative, helping visitors learn about autism and sign up for events while providing an inclusive digital experience. The project focused on creating a clear, accessible website that communicates the café’s mission, resources, and community activities.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="content-section">
+    <h2>My Role</h2>
+    <ul class="feature-list">
+      <li>Collaborated with a team of four to design and build the educational website.</li>
+      <li>Worked on the UI/UX design process, creating the sitemap and mapping key user flows.</li>
+      <li>Designed and iterated on high-fidelity wireframes for primary user journeys.</li>
+      <li>Translated designs into responsive WordPress pages, ensuring a user-centered experience across devices.</li>
+      <li>Conducted user testing and eye-tracking studies to evaluate navigation patterns and inform interface improvements.</li>
+    </ul>  </div>
+
+  <div class="divider"></div>
+
+
+  <div class="content-section">
+    <h2>Impact</h2>
+    <ul class="feature-list">
+      <li>Improved navigation and usability through data-informed design iterations based on user and eye-tracking insights.</li>
+      <li>Delivered a responsive website that supports the café’s mission and community outreach.</li>
+    </ul>  </div>
+
+  <div class="divider"></div>
+
+  <div class="content-section">
+    <h2>Key Skills</h2>
+    <p>UI/UX Design • Information Architecture • Wireframing • User Flow Design • WordPress Development • User Testing • Eye-Tracking Research • Accessibility Design</p>
+  </div>
+
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <a href="hadeel-farhan-portfolio.html" class="footer-logo">Hadeel Farhan</a>
+  <p class="footer-copy">© 2026 Hadeel Farhan. All rights reserved.</p>
+  <div class="footer-icons">
+    <a href="#" title="Analytics">📊</a>
+    <a href="mailto:hadeel@example.com" title="Email">✉️</a>
+    <a href="#" title="Download">⬇️</a>
+  </div>
+</footer>
+
+<script>
+  const sections = document.querySelectorAll('.content-section');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
