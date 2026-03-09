@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VR Patient Triage Simulation — Hadeel Farhan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0EB;
+    --dark: #1A1A18;
+    --terracotta: #C4633A;
+    --terracotta-light: #D4774E;
+    --muted: #8A8580;
+    --border: #E0D8D0;
+    --white: #FEFCFA;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 60px;
+    background: rgba(245, 240, 235, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--dark);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--dark);
+    font-size: 14px;
+    font-weight: 400;
+    opacity: 0.65;
+    transition: opacity 0.2s;
+  }
+
+  .nav-links a:hover { opacity: 1; }
+  .nav-links a.active { opacity: 1; color: var(--terracotta); font-weight: 500; }
+
+  /* MAIN CONTENT */
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 110px 40px 100px;
+  }
+
+  /* BACK LINK */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13.5px;
+    margin-bottom: 36px;
+    transition: color 0.2s, gap 0.2s;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards 0.1s;
+  }
+
+  .back-link:hover { color: var(--dark); gap: 10px; }
+  .back-link .arrow { font-size: 15px; }
+
+  /* TAGS */
+  .tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards 0.2s;
+  }
+
+  .tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    background: rgba(196,99,58,0.1);
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+
+  /* TITLE */
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 4.5vw, 46px);
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: var(--dark);
+    margin-bottom: 14px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards 0.3s;
+  }
+
+  .subtitle {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 44px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards 0.4s;
+  }
+
+  /* HERO IMAGE */
+  .hero-image {
+    width: 100%;
+    aspect-ratio: 16/10;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 60px;
+    background: var(--border);
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.5s;
+  }
+
+  .hero-image svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* CONTENT SECTIONS */
+  .content-section {
+    margin-bottom: 44px;
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .content-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .content-section h2 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .content-section p {
+    font-size: 15px;
+    color: #4a4845;
+    line-height: 1.8;
+  }
+
+  /* FEATURE LIST */
+  .feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .feature-list li {
+    font-size: 15px;
+    color: #4a4845;
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.6;
+  }
+
+  .feature-list li::before {
+    content: '·';
+    position: absolute;
+    left: 6px;
+    color: var(--terracotta);
+    font-size: 18px;
+    line-height: 1.4;
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 52px 0;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 28px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    background: var(--cream);
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--dark);
+    text-decoration: none;
+  }
+
+  .footer-copy { font-size: 12.5px; color: var(--muted); }
+
+  .footer-icons { display: flex; gap: 20px; }
+  .footer-icons a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 17px;
+    transition: color 0.2s;
+  }
+  .footer-icons a:hover { color: var(--terracotta); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="hadeel-farhan-portfolio.html" class="nav-logo">Hadeel Farhan</a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="hadeel-farhan-projects.html" class="active">Projects</a></li>
+    <li><a href="#">Certificates</a></li>
+    <li><a href="#">Artwork</a></li>
+  </ul>
+</nav>
+
+<!-- MAIN -->
+<main>
+
+  <a href="../projects.html" class="back-link">
+    <span class="arrow">←</span> All Projects
+  </a>
+
+  <div class="tags">
+    <span class="tag">VR</span>
+    <span class="tag">EdTech</span>
+    <span class="tag">Healthcare</span>
+    <span class="tag">Product Design</span>
+  </div>
+
+  <h1>NASA Smallsat Database Extraction</h1>
+  <h2> 2022</h2>
+  <br>
+
+  <div class = "img-display">
+    <img src="pics/nasa.png" width="100%"/>
+      <p class="subtitle">Wireframes of the interface for data extraction</p>
+    
+  </div>
+  
+
+
+  <!-- SECTIONS -->
+  <div class="content-section">
+    <p>Developed tools to support NASA’s Commercial Smallsat Data Acquisition (CSDA) program by improving how satellite data from commercial vendors is identified, organized, and accessed. The project focused on creating a system that curates satellite data related to high-value global events, ensuring researchers can easily discover and request relevant datasets through a centralized archive.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="content-section">
+    <h2>My Role</h2>
+    <ul class="feature-list">
+      <li>Contributed to the development of a system designed to identify, curate, and organize commercial satellite data associated with high-value events.</li>
+      <li>Built APIs and a web interface using Django to enable user-friendly access to the STAC event database.</li>
+      <li>Developed an Event Search interface allowing users to query and request satellite datasets from the archive.</li>
+      <li>Implemented features using Python, Django, JavaScript, HTML, and CSS to connect the front-end search tool with the backend data system.</li>
+    </ul>  </div>
+
+  <div class="divider"></div>
+
+
+  <div class="content-section">
+    <h2>Impact</h2>
+    <ul class="feature-list">
+      <li>Improved accessibility of commercial satellite imagery data for researchers and analysts through a structured search interface.</li>
+      <li>Enabled users to discover and request relevant datasets more efficiently via the event-based database.</li>
+      <li>Contributed to the development of a robust data archive supporting NASA’s satellite data research initiatives.</li>
+    </ul>  </div>
+
+  <div class="divider"></div>
+
+  <div class="content-section">
+    <h2>Key Skills</h2>
+    <p>Software Development • Python • Django • API Development • JavaScript • HTML • CSS • UI/UX Design</p>
+  </div>
+
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <a href="hadeel-farhan-portfolio.html" class="footer-logo">Hadeel Farhan</a>
+  <p class="footer-copy">© 2026 Hadeel Farhan. All rights reserved.</p>
+  <div class="footer-icons">
+    <a href="#" title="Analytics">📊</a>
+    <a href="mailto:hadeel@example.com" title="Email">✉️</a>
+    <a href="#" title="Download">⬇️</a>
+  </div>
+</footer>
+
+<script>
+  const sections = document.querySelectorAll('.content-section');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
